@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dog PDF</title>
+  <style>
+    :root {
+      --background: #f3f6fa;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dadee6;
+      --danger: #dc2626;
+      --success: #15803d;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+
+    .header {
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      padding: 28px max(24px, calc((100vw - 1100px) / 2));
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .header-text { min-width: 0; }
+    .header h1 { margin: 0 0 7px; font-size: 30px; }
+    .header p { margin: 0; color: #dbeafe; }
+
+    .dog-stage {
+      position: relative;
+      flex: 0 0 132px;
+      height: 86px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dog-shadow {
+      position: absolute;
+      left: 50%;
+      bottom: 5px;
+      width: 88px;
+      height: 13px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.24);
+      transform: translateX(-50%);
+      animation: shadowPulse 1.25s ease-in-out infinite;
+    }
+
+    .dog {
+      position: relative;
+      z-index: 1;
+      width: 90px;
+      height: 72px;
+      transform-origin: center bottom;
+      animation: dogBounce 1.25s ease-in-out infinite;
+    }
+
+    .dog-head {
+      position: absolute;
+      left: 19px;
+      top: 10px;
+      width: 55px;
+      height: 52px;
+      border-radius: 48% 48% 44% 44%;
+      background: #f4b860;
+      border: 3px solid #7c3f16;
+    }
+
+    .dog-ear {
+      position: absolute;
+      top: 10px;
+      width: 25px;
+      height: 39px;
+      background: #9a531f;
+      border: 3px solid #7c3f16;
+      border-radius: 60% 40% 65% 35%;
+    }
+
+    .dog-ear.left {
+      left: 7px;
+      transform: rotate(19deg);
+      animation: earLeft 1.25s ease-in-out infinite;
+    }
+
+    .dog-ear.right {
+      right: 3px;
+      transform: rotate(-19deg) scaleX(-1);
+      animation: earRight 1.25s ease-in-out infinite;
+    }
+
+    .dog-eye {
+      position: absolute;
+      top: 20px;
+      width: 6px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2b190f;
+      animation: dogBlink 4s infinite;
+    }
+
+    .dog-eye.left { left: 14px; }
+    .dog-eye.right { right: 14px; }
+
+    .dog-muzzle {
+      position: absolute;
+      left: 50%;
+      bottom: 5px;
+      width: 30px;
+      height: 23px;
+      border-radius: 50%;
+      background: #ffe2ac;
+      transform: translateX(-50%);
+    }
+
+    .dog-nose {
+      position: absolute;
+      left: 50%;
+      top: 2px;
+      width: 11px;
+      height: 8px;
+      border-radius: 55% 55% 65% 65%;
+      background: #25150e;
+      transform: translateX(-50%);
+    }
+
+    .dog-mouth {
+      position: absolute;
+      left: 50%;
+      top: 10px;
+      width: 13px;
+      height: 8px;
+      border-bottom: 2px solid #7c3f16;
+      border-radius: 0 0 50% 50%;
+      transform: translateX(-50%);
+    }
+
+    .dog-tongue {
+      position: absolute;
+      left: 50%;
+      top: 16px;
+      width: 9px;
+      height: 12px;
+      border-radius: 3px 3px 7px 7px;
+      background: #f4728b;
+      transform: translateX(-50%);
+      animation: tongueMove 0.65s ease-in-out infinite alternate;
+    }
+
+    .dog-collar {
+      position: absolute;
+      left: 24px;
+      bottom: 5px;
+      width: 45px;
+      height: 8px;
+      border-radius: 5px;
+      background: #ef4444;
+      border: 2px solid #991b1b;
+    }
+
+    .dog-tag {
+      position: absolute;
+      left: 43px;
+      bottom: -4px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #facc15;
+      border: 2px solid #a16207;
+    }
+
+    @keyframes dogBounce {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+
+    @keyframes shadowPulse {
+      0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.75; }
+      50% { transform: translateX(-50%) scaleX(0.72); opacity: 0.4; }
+    }
+
+    @keyframes earLeft {
+      0%, 100% { transform: rotate(19deg); }
+      50% { transform: rotate(34deg); }
+    }
+
+    @keyframes earRight {
+      0%, 100% { transform: rotate(-19deg) scaleX(-1); }
+      50% { transform: rotate(-34deg) scaleX(-1); }
+    }
+
+    @keyframes dogBlink {
+      0%, 44%, 48%, 100% { transform: scaleY(1); }
+      46% { transform: scaleY(0.12); }
+    }
+
+    @keyframes tongueMove {
+      from { height: 9px; }
+      to { height: 14px; }
+    }
+
+    .container {
+      width: min(1100px, calc(100% - 32px));
+      margin: 24px auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid #edf0f4;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      padding: 20px 20px 14px;
+    }
+
+    .button {
+      min-height: 40px;
+      padding: 9px 15px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+
+    .button:hover:not(:disabled) { background: #f8fafc; transform: translateY(-1px); }
+    .button:disabled { opacity: 0.48; cursor: not-allowed; }
+    .button.primary { color: white; background: var(--primary); border-color: var(--primary); }
+    .button.primary:hover:not(:disabled) { background: var(--primary-dark); }
+    .button.danger { color: var(--danger); }
+    .button.word-button {
+      color: #ffffff;
+      background: #185abd;
+      border-color: #185abd;
+    }
+    .button.word-button:hover:not(.disabled) {
+      background: #124a9e;
+      transform: translateY(-1px);
+    }
+    .button.word-button.disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .file-input { display: none; }
+
+    .word-render-area {
+      position: fixed;
+      left: -100000px;
+      top: 0;
+      width: 794px;
+      padding: 58px 64px;
+      background: #ffffff;
+      color: #111827;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .word-render-area img { max-width: 100%; height: auto; }
+    .word-render-area table { width: 100%; border-collapse: collapse; }
+    .word-render-area th, .word-render-area td {
+      padding: 6px 8px;
+      border: 1px solid #aeb5bf;
+      vertical-align: top;
+    }
+    .word-render-area h1 { font-size: 28px; }
+    .word-render-area h2 { font-size: 23px; }
+    .word-render-area h3 { font-size: 19px; }
+    .word-render-area p { margin: 0 0 10px; }
+    .word-render-area ul, .word-render-area ol { margin: 0 0 10px; }
+
+    .drop-zone {
+      margin: 0 20px 16px;
+      padding: 16px;
+      color: var(--muted);
+      text-align: center;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      transition: 0.15s ease;
+    }
+
+    .drop-zone.dragging { color: var(--primary); border-color: var(--primary); background: #eff6ff; }
+
+    .table-wrap { margin: 0 20px; border: 1px solid var(--border); border-radius: 12px; overflow: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid #edf0f4; text-align: left; }
+    th { background: #f8fafc; color: #475569; font-size: 13px; }
+    tbody tr { cursor: pointer; }
+    tbody tr:hover { background: #f8fafc; }
+    tbody tr.selected { background: #dbeafe; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .empty { padding: 34px; text-align: center; color: var(--muted); }
+    .number-cell { width: 58px; color: var(--muted); }
+
+    .settings {
+      margin-top: 20px;
+      padding: 20px;
+      border-top: 1px solid #edf0f4;
+    }
+
+    .summary { margin-bottom: 15px; color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 14px;
+    }
+
+    .field label { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 700; }
+    .field input, .field select {
+      width: 100%;
+      height: 42px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--text);
+    }
+
+    .progress-row { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+    .progress-track { flex: 1; height: 13px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
+    .progress-bar { width: 0%; height: 100%; background: var(--primary); transition: width 0.2s ease; }
+    .percent { width: 48px; text-align: right; font-weight: 700; }
+
+    .footer-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 16px; }
+    .status { color: var(--muted); }
+    .status.error { color: var(--danger); }
+    .status.success { color: var(--success); }
+    .generate { min-width: 190px; min-height: 46px; }
+
+    .notice {
+      margin-top: 16px;
+      padding: 13px 15px;
+      border-radius: 10px;
+      background: #fff7ed;
+      color: #9a3412;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 850px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .container { width: min(100% - 18px, 1100px); margin-top: 12px; }
+      .header { padding: 22px 18px; }
+      .header-content { gap: 10px; }
+      .header h1 { font-size: 25px; }
+      .dog-stage { flex-basis: 98px; transform: scale(0.84); transform-origin: right center; }
+      .grid { grid-template-columns: 1fr; }
+      .footer-row { align-items: stretch; flex-direction: column; }
+      .generate { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1>Dog PDF</h1>
+        <p id="subtitle">Gere PDFs separados ou agrupe todas as imagens em um único documento.</p>
+      </div>
+
+      <div class="dog-stage" role="img" aria-label="Cachorro animado abanando as orelhas">
+        <div class="dog-shadow"></div>
+        <div class="dog" aria-hidden="true">
+          <div class="dog-ear left"></div>
+          <div class="dog-ear right"></div>
+          <div class="dog-head">
+            <span class="dog-eye left"></span>
+            <span class="dog-eye right"></span>
+            <div class="dog-muzzle">
+              <span class="dog-nose"></span>
+              <span class="dog-mouth"></span>
+              <span class="dog-tongue"></span>
+            </div>
+          </div>
+          <div class="dog-collar"></div>
+          <div class="dog-tag"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="toolbar">
+        <label class="button primary" for="fileInput">Adicionar imagens</label>
+        <input id="fileInput" class="file-input" type="file" accept="image/jpeg,image/png,image/bmp,image/gif,image/tiff" multiple>
+        <label id="wordButton" class="button word-button" for="wordInput">Adicionar Word</label>
+        <input id="wordInput" class="file-input" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple>
+        <button id="removeButton" class="button danger" type="button">Remover</button>
+        <button id="clearButton" class="button" type="button">Limpar lista</button>
+        <button id="upButton" class="button" type="button">Mover para cima</button>
+        <button id="downButton" class="button" type="button">Mover para baixo</button>
+      </div>
+
+      <div id="dropZone" class="drop-zone">Você também pode arrastar imagens para esta área.</div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Arquivo</th>
+              <th>Formato</th>
+              <th>Tamanho</th>
+            </tr>
+          </thead>
+          <tbody id="imageList"></tbody>
+        </table>
+        <div id="emptyState" class="empty">Nenhuma imagem adicionada.</div>
+      </div>
+
+      <div class="settings">
+        <div id="summary" class="summary">0 imagem(ns). Serão criados 0 PDF(s).</div>
+
+        <div class="grid">
+          <div class="field">
+            <label for="mode">Modo de saída</label>
+            <select id="mode">
+              <option value="separate">Gerar PDFs separados</option>
+              <option value="grouped">Agrupar em um único PDF</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="pageSize">Página</label>
+            <select id="pageSize">
+              <option value="a4">A4</option>
+              <option value="letter">Carta</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="orientation">Orientação</label>
+            <select id="orientation">
+              <option value="auto">Automática</option>
+              <option value="portrait">Retrato</option>
+              <option value="landscape">Paisagem</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="fit">Ajuste</label>
+            <select id="fit">
+              <option value="contain">Ajustar na página</option>
+              <option value="cover">Preencher página</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="progress-row">
+          <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+          <div id="percent" class="percent">0%</div>
+        </div>
+
+        <div class="footer-row">
+          <div id="status" class="status">Aguardando imagens...</div>
+          <button id="generateButton" class="button primary generate" type="button" disabled>GERAR PDFs</button>
+        </div>
+
+        <div class="notice">
+          O processamento acontece no navegador. Imagens e documentos não são enviados para um servidor. A conversão Word aceita arquivos .docx e pode apresentar pequenas diferenças em documentos com formatação complexa. As bibliotecas são carregadas pela internet, portanto é necessário estar conectado ao abrir o arquivo.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="wordRenderArea" class="word-render-area" aria-hidden="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script>
+    'use strict';
+
+    const state = {
+      images: [],
+      selectedIndex: -1,
+      busy: false
+    };
+
+    const fileInput = document.getElementById('fileInput');
+    const wordInput = document.getElementById('wordInput');
+    const wordButton = document.getElementById('wordButton');
+    const wordRenderArea = document.getElementById('wordRenderArea');
+    const imageList = document.getElementById('imageList');
+    const emptyState = document.getElementById('emptyState');
+    const dropZone = document.getElementById('dropZone');
+    const removeButton = document.getElementById('removeButton');
+    const clearButton = document.getElementById('clearButton');
+    const upButton = document.getElementById('upButton');
+    const downButton = document.getElementById('downButton');
+    const mode = document.getElementById('mode');
+    const pageSize = document.getElementById('pageSize');
+    const orientation = document.getElementById('orientation');
+    const fit = document.getElementById('fit');
+    const summary = document.getElementById('summary');
+    const subtitle = document.getElementById('subtitle');
+    const progressBar = document.getElementById('progressBar');
+    const percent = document.getElementById('percent');
+    const status = document.getElementById('status');
+    const generateButton = document.getElementById('generateButton');
+
+    const supportedTypes = new Set([
+      'image/jpeg', 'image/png', 'image/bmp', 'image/gif', 'image/tiff'
+    ]);
+
+    function formatSize(bytes) {
+      return `${(bytes / 1024 / 1024).toLocaleString('pt-BR', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      })} MB`;
+    }
+
+    function extensionOf(fileName) {
+      const parts = fileName.split('.');
+      return parts.length > 1 ? parts.pop().toUpperCase() : '-';
+    }
+
+    function setStatus(text, type = '') {
+      status.textContent = text;
+      status.className = `status ${type}`.trim();
+    }
+
+    function setProgress(value) {
+      const safeValue = Math.max(0, Math.min(100, Math.round(value)));
+      progressBar.style.width = `${safeValue}%`;
+      percent.textContent = `${safeValue}%`;
+    }
+
+    function updateControls() {
+      const hasImages = state.images.length > 0;
+      const hasSelection = state.selectedIndex >= 0;
+      const disabled = state.busy;
+
+      removeButton.disabled = disabled || !hasSelection;
+      clearButton.disabled = disabled || !hasImages;
+      upButton.disabled = disabled || !hasSelection || state.selectedIndex === 0;
+      downButton.disabled = disabled || !hasSelection || state.selectedIndex === state.images.length - 1;
+      mode.disabled = disabled;
+      pageSize.disabled = disabled;
+      orientation.disabled = disabled;
+      fit.disabled = disabled;
+      fileInput.disabled = disabled;
+      wordInput.disabled = disabled;
+      wordButton.classList.toggle('disabled', disabled);
+      wordButton.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+      generateButton.disabled = disabled || !hasImages;
+
+      if (mode.value === 'grouped') {
+        summary.textContent = hasImages
+          ? `${state.images.length} imagem(ns). Será criado 1 PDF com ${state.images.length} página(s).`
+          : '0 imagem(ns). Nenhum PDF será criado.';
+        generateButton.textContent = 'GERAR PDF ÚNICO';
+        subtitle.textContent = 'Todas as imagens serão adicionadas ao mesmo PDF, na ordem da lista.';
+      } else {
+        summary.textContent = `${state.images.length} imagem(ns). Serão criados ${state.images.length} PDF(s).`;
+        generateButton.textContent = 'GERAR PDFs';
+        subtitle.textContent = 'Cada imagem será convertida em um arquivo PDF numerado.';
+      }
+    }
+
+    function renderList() {
+      imageList.innerHTML = '';
+      emptyState.hidden = state.images.length > 0;
+
+      state.images.forEach((item, index) => {
+        const row = document.createElement('tr');
+        if (index === state.selectedIndex) row.classList.add('selected');
+        row.innerHTML = `
+          <td class="number-cell">${index + 1}</td>
+          <td></td>
+          <td>${extensionOf(item.file.name)}</td>
+          <td>${formatSize(item.file.size)}</td>
+        `;
+        row.children[1].textContent = item.file.name;
+        row.addEventListener('click', () => {
+          state.selectedIndex = index;
+          renderList();
+        });
+        imageList.appendChild(row);
+      });
+
+      updateControls();
+    }
+
+    function addFiles(files) {
+      const existingKeys = new Set(state.images.map(item => item.key));
+      let rejected = 0;
+
+      Array.from(files).forEach(file => {
+        const key = `${file.name}|${file.size}|${file.lastModified}`;
+        const isSupported = supportedTypes.has(file.type) || /\.(jpe?g|png|bmp|gif|tiff?)$/i.test(file.name);
+        if (!isSupported) {
+          rejected += 1;
+          return;
+        }
+        if (!existingKeys.has(key)) {
+          state.images.push({ file, key });
+          existingKeys.add(key);
+        }
+      });
+
+      if (state.selectedIndex >= state.images.length) state.selectedIndex = -1;
+      renderList();
+      setStatus(rejected ? `${rejected} arquivo(s) ignorado(s) por formato não suportado.` : 'Imagens adicionadas.');
+    }
+
+    function removeSelected() {
+      if (state.selectedIndex < 0) return;
+      state.images.splice(state.selectedIndex, 1);
+      if (state.selectedIndex >= state.images.length) state.selectedIndex = state.images.length - 1;
+      renderList();
+    }
+
+    function moveSelected(direction) {
+      const oldIndex = state.selectedIndex;
+      const newIndex = oldIndex + direction;
+      if (oldIndex < 0 || newIndex < 0 || newIndex >= state.images.length) return;
+      const [item] = state.images.splice(oldIndex, 1);
+      state.images.splice(newIndex, 0, item);
+      state.selectedIndex = newIndex;
+      renderList();
+    }
+
+    function clearImages() {
+      state.images = [];
+      state.selectedIndex = -1;
+      setProgress(0);
+      setStatus('Aguardando imagens...');
+      renderList();
+    }
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error(`Não foi possível ler ${file.name}.`));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function loadImage(dataUrl, fileName) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error(`Não foi possível processar ${fileName}.`));
+        image.src = dataUrl;
+      });
+    }
+
+    function imageToJpegData(image) {
+      const canvas = document.createElement('canvas');
+      canvas.width = image.naturalWidth || image.width;
+      canvas.height = image.naturalHeight || image.height;
+      const context = canvas.getContext('2d', { alpha: false });
+      context.fillStyle = '#ffffff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(image, 0, 0);
+      return canvas.toDataURL('image/jpeg', 0.94);
+    }
+
+    function getPageOrientation(image) {
+      if (orientation.value === 'portrait') return 'portrait';
+      if (orientation.value === 'landscape') return 'landscape';
+      return image.width > image.height ? 'landscape' : 'portrait';
+    }
+
+    function createPdf(pageOrientation) {
+      const { jsPDF } = window.jspdf;
+      return new jsPDF({
+        orientation: pageOrientation,
+        unit: 'mm',
+        format: pageSize.value,
+        compress: true
+      });
+    }
+
+    function addImageToCurrentPage(pdf, image, jpegData) {
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 9;
+      const availableWidth = pageWidth - margin * 2;
+      const availableHeight = pageHeight - margin * 2;
+      const imageRatio = image.width / image.height;
+      const pageRatio = availableWidth / availableHeight;
+
+      let width;
+      let height;
+
+      if (fit.value === 'cover') {
+        if (imageRatio > pageRatio) {
+          height = availableHeight;
+          width = height * imageRatio;
+        } else {
+          width = availableWidth;
+          height = width / imageRatio;
+        }
+      } else if (imageRatio > pageRatio) {
+        width = availableWidth;
+        height = width / imageRatio;
+      } else {
+        height = availableHeight;
+        width = height * imageRatio;
+      }
+
+      const x = margin + (availableWidth - width) / 2;
+      const y = margin + (availableHeight - height) / 2;
+      pdf.addImage(jpegData, 'JPEG', x, y, width, height, undefined, 'FAST');
+    }
+
+    function safeFileName(name) {
+      return name.replace(/[\\/:*?"<>|]+/g, '_').replace(/\.[^.]+$/, '') || 'Conversao';
+    }
+
+    function pause(milliseconds) {
+      return new Promise(resolve => setTimeout(resolve, milliseconds));
+    }
+
+    async function generateGroupedPdf() {
+      let pdf = null;
+
+      for (let index = 0; index < state.images.length; index += 1) {
+        const item = state.images[index];
+        setStatus(`Adicionando página ${index + 1} de ${state.images.length}: ${item.file.name}`);
+
+        const dataUrl = await readFileAsDataURL(item.file);
+        const image = await loadImage(dataUrl, item.file.name);
+        const jpegData = imageToJpegData(image);
+        const pageOrientation = getPageOrientation(image);
+
+        if (!pdf) {
+          pdf = createPdf(pageOrientation);
+        } else {
+          pdf.addPage(pageSize.value, pageOrientation);
+        }
+
+        addImageToCurrentPage(pdf, image, jpegData);
+        setProgress(((index + 1) / state.images.length) * 100);
+        await pause(20);
+      }
+
+      pdf.save('Conversao agrupada.pdf');
+    }
+
+    async function generateSeparatePdfs() {
+      for (let index = 0; index < state.images.length; index += 1) {
+        const item = state.images[index];
+        setStatus(`Convertendo ${index + 1} de ${state.images.length}: ${item.file.name}`);
+
+        const dataUrl = await readFileAsDataURL(item.file);
+        const image = await loadImage(dataUrl, item.file.name);
+        const jpegData = imageToJpegData(image);
+        const pdf = createPdf(getPageOrientation(image));
+        addImageToCurrentPage(pdf, image, jpegData);
+        pdf.save(`Conversao ${index + 1} - ${safeFileName(item.file.name)}.pdf`);
+
+        setProgress(((index + 1) / state.images.length) * 100);
+        await pause(300);
+      }
+    }
+
+    function readFileAsArrayBuffer(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error(`Não foi possível ler ${file.name}.`));
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    function waitForImages(container) {
+      const images = Array.from(container.querySelectorAll('img'));
+      return Promise.all(images.map(image => {
+        if (image.complete) return Promise.resolve();
+        return new Promise(resolve => {
+          image.onload = resolve;
+          image.onerror = resolve;
+        });
+      }));
+    }
+
+    async function convertWordFile(file, current, total) {
+      if (!window.mammoth) {
+        throw new Error('A biblioteca de leitura do Word não foi carregada.');
+      }
+      if (!window.html2canvas) {
+        throw new Error('A biblioteca de renderização não foi carregada.');
+      }
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        throw new Error('A biblioteca de PDF não foi carregada.');
+      }
+
+      setStatus(`Convertendo Word ${current} de ${total}: ${file.name}`);
+      const arrayBuffer = await readFileAsArrayBuffer(file);
+      const result = await window.mammoth.convertToHtml({ arrayBuffer });
+
+      wordRenderArea.innerHTML = result.value || '<p>Documento sem conteúdo visível.</p>';
+      await waitForImages(wordRenderArea);
+      await pause(60);
+
+      const canvas = await window.html2canvas(wordRenderArea, {
+        backgroundColor: '#ffffff',
+        scale: 1.7,
+        useCORS: true,
+        logging: false,
+        windowWidth: 794
+      });
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: pageSize.value,
+        compress: true
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 10;
+      const contentWidth = pageWidth - margin * 2;
+      const contentHeight = pageHeight - margin * 2;
+      const pixelsPerMm = canvas.width / contentWidth;
+      const pageHeightPixels = Math.max(1, Math.floor(contentHeight * pixelsPerMm));
+      let sourceY = 0;
+      let pageNumber = 0;
+
+      while (sourceY < canvas.height) {
+        const sliceHeight = Math.min(pageHeightPixels, canvas.height - sourceY);
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width = canvas.width;
+        pageCanvas.height = sliceHeight;
+        const pageContext = pageCanvas.getContext('2d');
+        pageContext.fillStyle = '#ffffff';
+        pageContext.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+        pageContext.drawImage(
+          canvas,
+          0, sourceY, canvas.width, sliceHeight,
+          0, 0, pageCanvas.width, pageCanvas.height
+        );
+
+        if (pageNumber > 0) pdf.addPage(pageSize.value, 'portrait');
+        const renderedHeight = sliceHeight / pixelsPerMm;
+        pdf.addImage(
+          pageCanvas.toDataURL('image/jpeg', 0.93),
+          'JPEG',
+          margin,
+          margin,
+          contentWidth,
+          renderedHeight,
+          undefined,
+          'FAST'
+        );
+
+        sourceY += sliceHeight;
+        pageNumber += 1;
+      }
+
+      pdf.save(`${safeFileName(file.name)}.pdf`);
+      wordRenderArea.innerHTML = '';
+
+      if (result.messages && result.messages.length) {
+        console.warn('Avisos da conversão Word:', result.messages);
+      }
+    }
+
+    async function convertWordFiles(files) {
+      const documents = Array.from(files).filter(file => /\.docx$/i.test(file.name));
+      wordInput.value = '';
+
+      if (!documents.length) {
+        setStatus('Selecione pelo menos um arquivo Word no formato .docx.', 'error');
+        return;
+      }
+      if (state.busy) return;
+
+      state.busy = true;
+      setProgress(0);
+      updateControls();
+
+      try {
+        for (let index = 0; index < documents.length; index += 1) {
+          await convertWordFile(documents[index], index + 1, documents.length);
+          setProgress(((index + 1) / documents.length) * 100);
+          await pause(250);
+        }
+        setStatus(`${documents.length} documento(s) Word convertido(s) em PDF.`, 'success');
+      } catch (error) {
+        console.error(error);
+        setStatus(`Não foi possível converter o Word: ${error.message}`, 'error');
+      } finally {
+        wordRenderArea.innerHTML = '';
+        state.busy = false;
+        updateControls();
+      }
+    }
+
+    async function generatePdfs() {
+      if (!state.images.length || state.busy) return;
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        setStatus('A biblioteca de PDF não foi carregada. Verifique sua conexão com a internet e abra o arquivo novamente.', 'error');
+        return;
+      }
+
+      state.busy = true;
+      setProgress(0);
+      updateControls();
+
+      try {
+        if (mode.value === 'grouped') {
+          await generateGroupedPdf();
+          setStatus(`PDF agrupado criado com ${state.images.length} página(s).`, 'success');
+        } else {
+          await generateSeparatePdfs();
+          setStatus(`${state.images.length} PDF(s) criado(s) com sucesso.`, 'success');
+        }
+      } catch (error) {
+        console.error(error);
+        setStatus(`Não foi possível concluir: ${error.message}`, 'error');
+      } finally {
+        state.busy = false;
+        updateControls();
+      }
+    }
+
+    fileInput.addEventListener('change', event => {
+      addFiles(event.target.files);
+      event.target.value = '';
+    });
+
+    wordInput.addEventListener('change', event => {
+      convertWordFiles(event.target.files);
+    });
+
+    removeButton.addEventListener('click', removeSelected);
+    clearButton.addEventListener('click', clearImages);
+    upButton.addEventListener('click', () => moveSelected(-1));
+    downButton.addEventListener('click', () => moveSelected(1));
+    mode.addEventListener('change', updateControls);
+    generateButton.addEventListener('click', generatePdfs);
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, event => {
+        event.preventDefault();
+        if (!state.busy) dropZone.classList.add('dragging');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, event => {
+        event.preventDefault();
+        dropZone.classList.remove('dragging');
+      });
+    });
+
+    dropZone.addEventListener('drop', event => {
+      if (!state.busy) addFiles(event.dataTransfer.files);
+    });
+
+    renderList();
+  </script>
+</body>
+</html>
